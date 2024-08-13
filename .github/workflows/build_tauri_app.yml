@@ -3,7 +3,7 @@ name: 'publish_tauri_app'
 on:
   push:
     branches:
-      - feat/tauri-app_build_action
+      - tauri-app_build_action
   workflow_dispatch:
 
 jobs:
