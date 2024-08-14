@@ -50,10 +50,10 @@ jobs:
         with:
           workspaces: './src-tauri -> target'
 
-      # - name: install frontend dependencies
+      - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
         # run: yarn install # change this to npm or pnpm depending on which one you use.
-
+        run: yarn tauri build
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }}
@@ -64,4 +64,4 @@ jobs:
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: true
-          #args: ${{ matrix.settings.args }}
+          args: ${{ matrix.settings.args }}
