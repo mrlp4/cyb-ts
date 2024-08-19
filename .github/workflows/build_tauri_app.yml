@@ -2,8 +2,8 @@ name: 'publish_tauri_app'
 
 on:
   push:
-    branches:
-      - tauri-app_build_action
+    tags:
+    - '*'
   workflow_dispatch:
 
 jobs:
@@ -14,14 +14,14 @@ jobs:
       fail-fast: false
       matrix:
         settings:
-          #- platform: 'macos-latest' # for Arm based macs (M1 and above).
-          #  args: '--target aarch64-apple-darwin'
-          #- platform: 'macos-latest' # for Intel based macs.
-          #  args: '--target x86_64-apple-darwin'
+          - platform: 'macos-latest' # for Arm based macs (M1 and above).
+            args: '--target aarch64-apple-darwin'
+          - platform: 'macos-latest' # for Intel based macs.
+            args: '--target x86_64-apple-darwin'
           - platform: 'ubuntu-22.04'
             args: ''
-          #- platform: 'windows-latest'
-          #  args: ''
+          - platform: 'windows-latest'
+            args: ''
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
@@ -46,7 +46,6 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.settings.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Rust cache
@@ -58,8 +57,6 @@ jobs:
         run: yarn add -D @tauri-apps/cli && yarn install
           
       - name: install frontend dependencies
-        # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
-        # run: yarn install # change this to npm or pnpm depending on which one you use.
         run: yarn tauri build ${{ matrix.settings.args }}
       - uses: tauri-apps/tauri-action@v0
         env:
